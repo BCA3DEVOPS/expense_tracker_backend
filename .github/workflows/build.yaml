@@ -22,10 +22,12 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean package
+        working-directory: expense-tracker   # 👈 IMPORTANT
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
+          projectBaseDir: expense-tracker    # 👈 IMPORTANT
           args: >
             -Dsonar.organization=meenuvasu
             -Dsonar.projectKey=meenuvasu_expense_tracker_backend
