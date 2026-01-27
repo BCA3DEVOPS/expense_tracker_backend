@@ -2,6 +2,7 @@ package com.expensetracker.expense_tracker.service;
 
 import com.expensetracker.expense_tracker.model.Expense;
 import com.expensetracker.expense_tracker.repository.ExpenseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,31 +10,37 @@ import java.util.List;
 @Service
 public class ExpenseService {
 
-    private final ExpenseRepository repository;
+    @Autowired
+    private ExpenseRepository repo;
 
-    public ExpenseService(ExpenseRepository repository) {
-        this.repository = repository;
-    }
-
-    // CREATE
     public Expense addExpense(Expense expense) {
-        return repository.save(expense);
+        return repo.save(expense);
     }
 
-    // READ
     public List<Expense> getAllExpenses() {
-        return repository.findAll();
+        return repo.findAll();
     }
 
-    // DELETE
+    public List<Expense> getByMonth(int month) {
+        return repo.findByMonth(month);
+    }
+
+    public Double getMonthlyTotal(int month) {
+        return repo.getMonthlyTotal(month);
+    }
+
+    public Expense updateExpense(Long id, Expense expense) {
+        Expense existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Expense not found"));
+
+        existing.setTitle(expense.getTitle());
+        existing.setAmount(expense.getAmount());
+        existing.setDate(expense.getDate());
+
+        return repo.save(existing);
+    }
+
     public void deleteExpense(Long id) {
-        repository.deleteById(id);
-    }
-
-    // MONTH-WISE TOTAL
-    public Double calculateMonthlyTotal(int month) {
-        Double total = repository.getMonthlyTotal(month);
-        return total != null ? total : 0.0;
+        repo.deleteById(id);
     }
 }
-
