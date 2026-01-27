@@ -1,17 +1,16 @@
-name: SonarCloud Backend Scan
+name: SonarCloud Scan
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   sonar:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -19,11 +18,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'temurin'
+          distribution: temurin
 
       - name: Build with Maven
-        run: mvn clean verify
-        working-directory: expense-tracker
+        run: mvn clean package
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -31,5 +29,6 @@ jobs:
           args: >
             -Dsonar.organization=meenuvasu
             -Dsonar.projectKey=meenuvasu_expense_tracker_backend
+            -Dsonar.java.binaries=target/classes
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
