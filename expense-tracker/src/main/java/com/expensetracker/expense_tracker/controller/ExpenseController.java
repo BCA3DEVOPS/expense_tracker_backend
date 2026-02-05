@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/expenses")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*,expense-tracker-meenakshi.vercel.app")
 public class ExpenseController {
 
     private final ExpenseRepository repo;
